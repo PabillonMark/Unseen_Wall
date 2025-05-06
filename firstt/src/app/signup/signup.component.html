@@ -1,0 +1,43 @@
+<div class="signup-container">
+  <div class="logo">UW</div>
+  <h1>Sign Up</h1>
+  <p>Create your account to start sharing!</p>
+
+  <div class="social-buttons">
+    <button class="social-btn" (click)="onSocialLogin('Instagram')"><img src="/assets/1.jpg" alt="Instagram"></button>
+    <button class="social-btn" (click)="onSocialLogin('Facebook')"><img src="/assets/2.jpg" alt="Facebook"></button>
+    <button class="social-btn" (click)="onSocialLogin('Google')"><img src="/assets/3.jpg" alt="Google"></button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="form-group">
+    <div class="input-group">
+      <span class="input-icon">👤</span>
+      <input type="text" placeholder="Username" [(ngModel)]="username" required />
+    </div>
+    <div class="input-group">
+      <span class="input-icon">📧</span>
+      <input type="email" placeholder="Email address" [(ngModel)]="email" required />
+    </div>
+    <div class="input-group">
+      <span class="input-icon">🔒</span>
+      <input type="password" placeholder="Password" [(ngModel)]="password" required />
+    </div>
+    <div class="input-group">
+      <span class="input-icon">🔒</span>
+      <input type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword" required />
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  <div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+
+  <button class="signup-btn" (click)="onSignUp()">Sign up</button>
+
+  <p class="login-link">Already have an account? <a href="#" (click)="onLogin()">Sign in</a></p>
+</div>

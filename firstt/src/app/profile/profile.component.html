@@ -1,0 +1,67 @@
+<div class="profile-container">
+  <!-- Left Side Header with Profile -->
+  <div class="sidebar">
+    <div class="profile-header">
+      <img [src]="currentUser.profileImage" alt="Profile" class="profile-image" />
+      <div class="profile-info">
+        <span class="username">{{ currentUser.username }}</span>
+        <button class="manage-btn" (click)="setActiveTab('details')">Manage Details or Posts</button>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#" (click)="setActiveTab('posts')">Posts</a>
+      <a href="#">Replies</a>
+      <a href="#">Highlights</a>
+      <a href="#">Articles</a>
+    </div>
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1>Profile</h1>
+    </div>
+
+    <!-- Posts Tab -->
+    <div class="posts-section" *ngIf="activeTab === 'posts'">
+      <div class="posts-list">
+        <div class="post" *ngFor="let post of posts">
+          <div class="post-header">
+            <span class="timestamp">{{ post.timestamp }}</span>
+          </div>
+          <div class="post-content">
+            <p>{{ post.content }}</p>
+            <img *ngIf="post.photo" [src]="post.photo" alt="Post Image" />
+          </div>
+          <div class="post-reactions">
+            <ng-container *ngFor="let reaction of post.reactions">
+              <span class="reaction-icon">{{ reaction.type }}</span>
+              <span class="reaction-count">{{ reaction.count }}</span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Tab -->
+    <div class="details-section" *ngIf="activeTab === 'details'">
+      <h2>Edit Profile</h2>
+      <form (ngSubmit)="updateProfile()">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" [(ngModel)]="newUsername" name="username" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" [(ngModel)]="newEmail" name="email" />
+        </div>
+        <div class="form-group">
+          <label for="bio">Bio</label>
+          <textarea id="bio" [(ngModel)]="newBio" name="bio" rows="3"></textarea>
+        </div>
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>

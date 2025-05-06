@@ -1,0 +1,50 @@
+<div class="login-container">
+  <div class="logo">UW</div>
+  <h1>Connect and Express Freely</h1>
+  <h2>Sign in</h2>
+  <p>Please sign in to continue</p>
+
+  <div class="social-buttons">
+    <button class="social-btn"><img src="/assets/1.jpg" alt="Instagram"></button>
+    <button class="social-btn"><img src="/assets/2.jpg" alt="Facebook"></button>
+    <button class="social-btn"><img src="/assets/3.jpg" alt="Google"></button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="form-group">
+    <div class="input-group">
+      <span class="input-icon">👤</span>
+      <input type="email" placeholder="Email address" [(ngModel)]="email" required />
+    </div>
+    <div class="input-group">
+      <span class="input-icon">🔒</span>
+      <input type="password" placeholder="Password" [(ngModel)]="password" required />
+    </div>
+    <a href="#" class="forgot-password" (click)="openForgotPasswordModal(); $event.preventDefault()">Forgot password?</a>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <button class="sign-in-btn" (click)="onSignIn()">Sign in</button>
+
+  <p class="signup-link">Don't have an account? <a (click)="onSignUp($event)">Sign up</a></p>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal" *ngIf="showForgotPasswordModal">
+    <div class="modal-content">
+      <h2>Forgot Password</h2>
+      <p>Enter your email address to receive a password reset link.</p>
+      <div class="input-group">
+        <span class="input-icon">📧</span>
+        <input type="email" placeholder="Email address" [(ngModel)]="resetEmail" required />
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel-btn" (click)="closeForgotPasswordModal()">Cancel</button>
+        <button class="modal-btn send-btn" (click)="onSendResetLink()">Send Reset Link</button>
+      </div>
+    </div>
+  </div>
+</div>

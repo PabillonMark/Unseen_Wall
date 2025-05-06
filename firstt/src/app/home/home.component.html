@@ -1,0 +1,115 @@
+<div class="home-container">
+  <header class="header">
+    <div class="logo">UW</div>
+    <div class="header-spacer"></div>
+  </header>
+  <main class="feed">
+    <!-- Share Feedback -->
+    <div class="share-feedback" *ngIf="shareMessage">{{ shareMessage }}</div>
+    <!-- Post Creation Section -->
+    <div class="post-creation">
+      <textarea placeholder="What's on your mind, @anonymous?" [(ngModel)]="newPostContent" rows="3"></textarea>
+      <div class="post-options">
+        <label class="photo-upload">
+          <i class="fas fa-camera"></i> Add Photo
+          <input type="file" accept="image/*" (change)="onPhotoUpload($event)" style="display: none;" />
+        </label>
+        <button class="post-btn" (click)="createPost()" [disabled]="!newPostContent.trim() && !newPostPhoto">Post</button>
+      </div>
+      <div class="photo-preview" *ngIf="newPostPhoto">
+        <img [src]="newPostPhoto" alt="Photo Preview" />
+        <button class="remove-photo" (click)="removePhoto()">×</button>
+      </div>
+    </div>
+    <!-- Feed Section -->
+    <div class="post-card" [ngClass]="{'shared': post.isShared}" *ngFor="let post of posts; let i = index">
+      <div class="post-header">
+        <span class="username">Anonymous</span>
+        <span class="timestamp">{{ post.timestamp }}</span>
+      </div>
+      <p class="post-content shared-prefix" *ngIf="post.isShared">{{ post.sharedBy }} shared a post:</p>
+      <p class="post-content">{{ post.content }}</p>
+      <div class="post-image" *ngIf="post.photo">
+        <img [src]="post.photo" alt="Post Image" />
+      </div>
+      <!-- Reaction Summary (Post) -->
+      <div class="reaction-summary" *ngIf="post.reactions.length > 0">
+        <span class="reaction-icon" *ngFor="let reaction of post.reactions | slice:0:3">
+          {{ getReactionIcon(reaction.type) }}
+        </span>
+        <span class="reaction-count">{{ getTotalReactions(post) }}</span>
+      </div>
+      <!-- Post Actions -->
+      <div class="post-actions">
+        <div class="action-icon reaction-wrapper">
+          <span (click)="toggleReaction(post, 'Like', true); closeReactionBar(i, true)" [ngClass]="{'reacted': post.userReaction === 'Like'}">
+            <i class="fas fa-thumbs-up"></i> {{ post.userReaction ? post.userReaction : 'Like' }}
+          </span>
+          <div class="reaction-bar" [ngClass]="{'show': showReactionBar[i]}" (mouseenter)="openReactionBar(i, true)" (mouseleave)="closeReactionBar(i, true)">
+            <span *ngFor="let reaction of reactionTypes" (click)="selectReaction(post, reaction, i, true); $event.stopPropagation()" class="reaction-option" [attr.data-reaction]="reaction">
+              {{ getReactionIcon(reaction) }}
+            </span>
+          </div>
+        </div>
+        <span class="action-icon" (click)="toggleComments(post)">
+          <i class="fas fa-comment"></i> Comment ({{ post.commentCount }})
+        </span>
+        <span class="action-icon" (click)="sharePost(post)">
+          <i class="fas fa-share"></i> Share
+        </span>
+      </div>
+      <!-- Comment Section -->
+      <div class="comments-section" *ngIf="post.showComments">
+        <div class="comment-list">
+          <div class="comment" *ngFor="let comment of post.comments; let j = index">
+            <div class="comment-content">
+              <span class="comment-author">Anonymous</span>
+              <span class="comment-text">{{ comment.text }}</span>
+              <!-- Comment Reaction Summary and Actions -->
+              <div class="reaction-summary" *ngIf="comment.reactions.length > 0">
+                <span class="reaction-icon" *ngFor="let reaction of comment.reactions | slice:0:3">
+                  {{ getReactionIcon(reaction.type) }}
+                </span>
+                <span class="reaction-count">{{ getTotalReactions(comment) }}</span>
+              </div>
+              <div class="comment-actions">
+                <div class="action-icon reaction-wrapper">
+                  <span (click)="toggleReaction(comment, 'Like', false, i, j); closeReactionBar(j, false, i)" [ngClass]="{'reacted': comment.userReaction === 'Like'}">
+                    <i class="fas fa-thumbs-up"></i> {{ comment.userReaction ? comment.userReaction : 'Like' }}
+                  </span>
+                  <div class="reaction-bar" [ngClass]="{'show': showCommentReactionBar[i][j]}" (mouseenter)="openReactionBar(j, false, i)" (mouseleave)="closeReactionBar(j, false, i)">
+                    <span *ngFor="let reaction of reactionTypes" (click)="selectReaction(comment, reaction, j, false, i); $event.stopPropagation()" class="reaction-option" [attr.data-reaction]="reaction">
+                      {{ getReactionIcon(reaction) }}
+                    </span>
+                  </div>
+                </div>
+                <span class="action-icon" (click)="toggleReplyInput(comment, i, j)">
+                  <i class="fas fa-reply"></i> Reply ({{ comment.replies.length }})
+                </span>
+              </div>
+              <!-- Replies -->
+              <div class="replies" *ngIf="comment.replies.length > 0">
+                <div class="reply" *ngFor="let reply of comment.replies">
+                  <span class="reply-author">{{ reply.user }}</span>
+                  <span class="reply-text">{{ reply.text }}</span>
+                  <span class="reply-timestamp">{{ reply.timestamp }}</span>
+                </div>
+              </div>
+              <!-- Reply Input -->
+              <div class="reply-input" *ngIf="comment.showReplyInput">
+                <input type="text" placeholder="Write a reply..." [(ngModel)]="newReply[i][j]" (keyup.enter)="addReply(post, comment, i, j)" />
+                <button (click)="addReply(post, comment, i, j)" [disabled]="!newReply[i][j]"><i class="fas fa-paper-plane"></i></button>
+              </div>
+            </div>
+            <span class="comment-timestamp">{{ comment.timestamp }}</span>
+          </div>
+          <div class="no-comments" *ngIf="post.comments.length === 0">No comments yet.</div>
+        </div>
+        <div class="comment-input">
+          <input type="text" placeholder="Write a comment..." [(ngModel)]="newComment[i]" (keyup.enter)="addComment(post, i)" />
+          <button (click)="addComment(post, i)" [disabled]="!newComment[i]"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
